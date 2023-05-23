@@ -1,0 +1,50 @@
+#assi 10,12,13
+
+import tensorflow as tf
+from tensorflow.keras import layers, models
+import matplotlib.pyplot as plt
+
+model = models.Sequential()
+
+model.add(layers.Conv2D(32, (3, 3), activation='relu', input_shape=(32, 32, 3)))
+model.add(layers.MaxPooling2D((2, 2)))
+model.add(layers.Conv2D(64, (3, 3), activation='relu'))
+model.add(layers.MaxPooling2D((2, 2)))
+model.add(layers.Conv2D(64, (3, 3), activation='relu'))
+
+model.add(layers.Flatten())
+model.add(layers.Dense(64, activation='relu'))
+model.add(layers.Dense(10))
+
+
+model.compile(optimizer='adam',
+              loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+              metrics=['accuracy'])
+
+(X_train, y_train), (X_test, y_test) = tf.keras.datasets.cifar10.load_data()
+X_train, X_test = X_train / 255.0, X_test / 255.0
+
+print(np.unique(y_train))
+
+model.fit(X_train, y_train, epochs=2, validation_data=(X_test, y_test))
+
+y_pred = model.predict(X_test)
+y_pred_cat = np.argmax(y_pred, axis=1)
+
+plt.imshow(X_test[185])
+
+""" ['airplane':0, 
+     'automobile':1,
+     'bird':2,
+     'cat':3,
+     'deer':4,
+     'dog':5,
+     'frog':6,
+     'horse':7,
+     'ship':8,
+     'truck':9]"""
+     
+print(y_pred_cat[185])
+
+test_loss, test_acc = model.evaluate(X_test, y_test, verbose=2)
+print('Test accuracy:', test_acc)

@@ -1,0 +1,27 @@
+# assi 11 
+import pandas as pd
+import tensorflow as tf
+from sklearn.datasets import load_breast_cancer
+from sklearn.model_selection import train_test_split
+
+data = load_breast_cancer()
+
+x_train,x_val_test,y_train,y_val_test = train_test_split(data.data,data.target, test_size = 0.2, random_state =42)
+
+x_val,x_test,y_val,y_test = train_test_split(x_val_test, y_val_test, test_size = 0.5, random_state = 42)
+
+model = tf.keras.Sequential([(
+    tf.keras.layers.Dense(1,input_shape=(30,), activation = 'sigmoid')
+)])
+
+loss_fn = tf.keras.losses.BinaryCrossentropy()
+optimizer = tf.keras.optimizers.SGD(learning_rate = 0.01)
+
+model.compile(optimizer=optimizer,loss = loss_fn, metrics = ['accuracy'])
+model.fit(x_train,y_train, validation_data=(x_val,y_val),epochs=100)
+y_predict = model.predict(x_test)
+y_test = y_test.T
+print(y_predict[8])
+print(y_test[8])
+metrics = model.evaluate(x_test,y_test)
+print('test accuracy : ', metrics)

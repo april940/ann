@@ -1,0 +1,27 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+def sigmoid(x):
+  return 1/(1+ np.exp(-x))
+
+def relu(x):
+  return np.maximum(0,x)
+
+def tanh(x):
+  return np.tanh(x)
+
+def plot_af(function, function_name):
+  x = np.linspace(-5,5)
+  y = function(x)
+  plt.plot(x,y,label = function_name)
+
+plot_af(sigmoid, 'Sigmoid')
+plot_af(relu, 'Relu')
+plot_af(tanh, 'Tanh')
+
+plt.xlabel('x')
+plt.ylabel("f(x)")
+plt.title("Activation Function")
+plt.legend()
+
+plt.show()
